@@ -38,17 +38,20 @@ class Producer:
         #
         #
         self.broker_properties = {
-            # TODO
-            # TODO
-            # TODO
+            "SCHEMA_REGISTRY_URL" = "http://localhost:8081"
+            "BROKER_URL" = "PLAINTEXT://localhost:9092"
         }
+
 
         # If the topic does not already exist, try to create it
         if self.topic_name not in Producer.existing_topics:
             self.create_topic()
             Producer.existing_topics.add(self.topic_name)
 
-        # TODO: Configure the AvroProducer
+        # TODO: Configure the AvroProducer  
+        schema_registry = CachedSchemaRegistryClient({self.broker_properties["SCHEMA_REGISTRY_URL"])
+        self.producer = AvroProducer({"bootstrap.servers": self.broker_properties["BROKER_URL"]}, schema_registry=schema_registry)
+
         # self.producer = AvroProducer(
         # )
 
@@ -60,10 +63,20 @@ class Producer:
         # the Kafka Broker.
         #
         #
+        client = AdminClient({"bootstrap.servers": self.broker_properties["BROKER_URL"]})
+        futures = client.create_topics(
+        [NewTopic(topic=self.topic_name, num_partitions=self.num_partitions, replication_factor=self.num_replicas)]
+        )
+        for _, future in futures.items():
+            try:
+                future.result()
+                print("topic created")
+            except Exception as e:
+                print(f"failed to create topic {self.topic_name}: {e}")
         logger.info("topic creation kafka integration incomplete - skipping")
 
-    def time_millis(self):
-        return int(round(time.time() * 1000))
+    #def time_millis(self):
+     #   return int(round(time.time() * 1000))
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
@@ -72,6 +85,7 @@ class Producer:
         # TODO: Write cleanup code for the Producer here
         #
         #
+        self.producer.flush() # Wait until all messages have been delivered
         logger.info("producer close incomplete - skipping")
 
     def time_millis(self):
