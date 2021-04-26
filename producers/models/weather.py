@@ -91,7 +91,7 @@ class Weather(Producer):
                    "key_schema": self.key_schema,
                    "records":[{"value":{"temperature":self.temp, "status": self.status.name}}]
                 }
-            ),
+            )
         )
         resp.raise_for_status()
 
