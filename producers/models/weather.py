@@ -54,12 +54,14 @@ class Weather(Producer):
         if Weather.key_schema is None:
             with open(f"{Path(__file__).parents[0]}/schemas/weather_key.json") as f:
                 Weather.key_schema = json.load(f)
+            #self.key_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/arrival_key.json")
 
         #
         # TODO: Define this value schema in `schemas/weather_value.json
         #
         if Weather.value_schema is None:
             with open(f"{Path(__file__).parents[0]}/schemas/weather_value.json") as f:
+                #Weather.value_schema = json.load(f)
                 Weather.value_schema = json.load(f)
 
     def _set_weather(self, month):
@@ -88,8 +90,8 @@ class Weather(Producer):
             headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
             data=json.dumps(
                 {
-                   "value_schema": self.value_schema,
-                   "key_schema": self.key_schema,
+                   "value_schema": Weather.value_schema,
+                   "key_schema": Weather.key_schema,
                    "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
                 }
             )
