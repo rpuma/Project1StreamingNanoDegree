@@ -69,7 +69,7 @@ class Station(Producer):
             value={"station_id": self.station_id,
                     "train_id" : train.train_id,
                     "direction" : direction,
-                    "line" : self.color,
+                    "line" : self.color.name,
                     "train_status" : train.status,
                     "prev_station_id" : prev_station_id,
                     "prev_direction" : prev_direction},
