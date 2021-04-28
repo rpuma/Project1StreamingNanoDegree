@@ -35,8 +35,8 @@ class Turnstile(Producer):
         # replicas
         #
         super().__init__(
-            #f"org.udacity.project1.turnstile.{station_name}", # TODO: Come up with a better topic name
-            "org.udacity.project1.turnstile",
+            # TODO: Come up with a better topic name
+            "org.chicago.cta.station.turnstile.{station_name}.v1",
             key_schema=Turnstile.key_schema,
             value_schema=Turnstile.value_schema,
             num_partitions=2,

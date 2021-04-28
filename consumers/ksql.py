@@ -28,12 +28,12 @@ CREATE TABLE turnstile (
     station_name VARCHAR,
     line VARCHAR
 ) WITH (
-    KAFKA_TOPIC = 'org.udacity.project1.turnstile',
+    KAFKA_TOPIC = '^org.chicago.cta.station.turnstile.',
     VALUE_FORMAT='AVRO',
     KEY = 'timestamp'
 );
 
-CREATE TABLE turnstile_summary
+CREATE TABLE TURNSTILE_SUMMARY
 WITH (VALUE_FORMAT='JSON') AS
 SELECT station_id, count(1) as count FROM turnstile GROUP BY station_id
 """
