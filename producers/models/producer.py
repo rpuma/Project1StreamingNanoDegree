@@ -5,7 +5,7 @@ import time
 
 from confluent_kafka import avro
 from confluent_kafka.admin import AdminClient, NewTopic
-from confluent_kafka.avro import AvroProducer
+from confluent_kafka.avro import AvroProducer, CachedSchemaRegistryClient
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class Producer:
             Producer.existing_topics.add(self.topic_name)
 
         # TODO: Configure the AvroProducer  
-        schema_registry = CachedSchemaRegistryClient({self.broker_properties["SCHEMA_REGISTRY_URL"])
+        schema_registry = CachedSchemaRegistryClient({"url": self.broker_properties["SCHEMA_REGISTRY_URL"]})
         self.producer = AvroProducer({"bootstrap.servers": self.broker_properties["BROKER_URL"]}, schema_registry=schema_registry)
 
         # self.producer = AvroProducer(

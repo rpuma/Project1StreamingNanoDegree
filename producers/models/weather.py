@@ -89,7 +89,7 @@ class Weather(Producer):
                 {
                    "value_schema": self.value_schema,
                    "key_schema": self.key_schema,
-                   "records":[{"value":{"temperature":self.temp, "status": self.status.name}}]
+                   "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
                 }
             )
         )

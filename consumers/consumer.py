@@ -2,8 +2,8 @@
 import logging
 
 import confluent_kafka
-from confluent_kafka import Consumer
-from confluent_kafka.avro import AvroConsumer
+from confluent_kafka import Consumer, OFFSET_BEGINNING
+from confluent_kafka.avro import AvroConsumer, CachedSchemaRegistryClient
 from confluent_kafka.avro.serializer import SerializerError
 from tornado import gen
 
@@ -37,26 +37,20 @@ class KafkaConsumer:
         #
         #
         self.broker_properties = {
-                #
-                # TODO
-                #
+            "broker.url" = "PLAINTEXT://localhost:9092"
         }
-
         # TODO: Create the Consumer, using the appropriate type.
         if is_avro is True:
             self.broker_properties["schema.registry.url"] = "http://localhost:8081"
-            #self.consumer = AvroConsumer(...)
+            schema_registry = CachedSchemaRegistryClient({"url": self.broker_properties["schema.registry.url"]})
+            self.consumer = AvroConsumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0"},
+            schema_registry = schema_registry)
         else:
-            #self.consumer = Consumer(...)
-            pass
+            self.consumer = Consumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0"})
 
-        #
-        #
         # TODO: Configure the AvroConsumer and subscribe to the topics. Make sure to think about
         # how the `on_assign` callback should be invoked.
-        #
-        #
-        # self.consumer.subscribe( TODO )
+        self.consumer.subscribe([topic_name_pattern],on_assign=on_assign)
 
     def on_assign(self, consumer, partitions):
         """Callback for when topic assignment takes place"""
@@ -64,13 +58,8 @@ class KafkaConsumer:
         # the beginning or earliest
         logger.info("on_assign is incomplete - skipping")
         for partition in partitions:
-            pass
-            #
-            #
-            # TODO
-            #
-            #
-
+            partition.offset = OFFSET_BEGINNING
+        # TODO: Assign the consumer the partitions
         logger.info("partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
 
@@ -84,21 +73,26 @@ class KafkaConsumer:
 
     def _consume(self):
         """Polls for a message. Returns 1 if a message was received, 0 otherwise"""
-        #
-        #
         # TODO: Poll Kafka for messages. Make sure to handle any errors or exceptions.
         # Additionally, make sure you return 1 when a message is processed, and 0 when no message
-        # is retrieved.
-        #
-        #
+        # is retrieved.        
+        message = c.poll(1.0)
+        if message is None:
+            print("no message received by consumer")
+        elif message.error() is not None:
+            print(f"error from consumer {message.error()}")
+        else:
+            try:
+                print(message.value())
+                return 1
+            except KeyError as e:
+                print(f"Failed to unpack message {e}")
         logger.info("_consume is incomplete - skipping")
         return 0
 
 
     def close(self):
         """Cleans up any open kafka consumers"""
-        #
-        #
         # TODO: Cleanup the kafka consumer
-        #
-        #
+        consumer.close()
+

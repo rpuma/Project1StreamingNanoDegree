@@ -4,9 +4,7 @@ import logging
 
 from models import Line
 
-
 logger = logging.getLogger(__name__)
-
 
 class Lines:
     """Contains all train lines"""
