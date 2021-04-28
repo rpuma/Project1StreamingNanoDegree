@@ -91,7 +91,7 @@ class Weather(Producer):
                 {
                    "value_schema": json.dumps(Weather.value_schema),
                    "key_schema": json.dumps(Weather.key_schema),
-                   "records":[{"key": self.time_millis(), "value":{"temperature":float(self.temp), "status": self.status.name}}]
+                   "records":[{"key":{"timestamp": self.time_millis()} , "value":{"temperature":self.temp, "status": self.status.name}}]
                 }
             )
         )
@@ -100,7 +100,7 @@ class Weather(Producer):
                 {
                    "value_schema": json.dumps(Weather.value_schema),
                    "key_schema": json.dumps(Weather.key_schema),
-                   "records":[{"key": self.time_millis(), "value":{"temperature":float(self.temp), "status": self.status.name}}]
+                   "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
                 }
             )
         )
