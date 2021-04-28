@@ -23,8 +23,24 @@ class Weather(Producer):
 
     rest_proxy_url = "http://localhost:8082"
 
-    key_schema = None
-    value_schema = None
+    key_schema = """{
+    "namespace": "com.udacity",
+    "type": "record",
+    "name": "weather.key",
+    "fields": [
+        {"name": "timestamp", "type": "long"}
+    ]
+    }"""
+    value_schema = """{
+    "namespace": "com.udacity",
+    "type": "record",
+    "name": "weather.value",
+    "fields": [
+        {"name": "temperature","type": "float"},
+        {"name":"status", "type": "string"}
+    ]
+    }"""
+
 
     winter_months = set((0, 1, 2, 3, 10, 11))
     summer_months = set((6, 7, 8))
@@ -90,8 +106,8 @@ class Weather(Producer):
             headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
             data=json.dumps(
                 {
-                   "value_schema": json.dumps(Weather.value_schema),
-                   "key_schema": json.dumps(Weather.key_schema),
+                   "value_schema": Weather.value_schema
+                   "key_schema": Weather.key_schema,
                    "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
                 }
             )
@@ -99,8 +115,8 @@ class Weather(Producer):
         print("data")
         print(json.dumps(
                 {
-                   "value_schema": json.dumps(Weather.value_schema),
-                   "key_schema": json.dumps(Weather.key_schema),
+                   "value_schema": Weather.value_schema,
+                   "key_schema": Weather.key_schema,
                    "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
                 }
             ))
