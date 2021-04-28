@@ -63,10 +63,6 @@ class Station(Producer):
         #
         #
         logger.info("arrival kafka integration incomplete - skipping")
-        print("time_millis()")
-        print(self.time_millis())
-        print(f"Previa estacion:{prev_station_id}")
-        print(f"Previa direccion:{prev_direction}")
         self.producer.produce(
             topic=self.topic_name,
             key={"timestamp": self.time_millis()},
