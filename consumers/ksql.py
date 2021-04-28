@@ -30,7 +30,6 @@ CREATE TABLE turnstile (
 ) WITH (
     KAFKA_TOPIC = 'org.chicago.cta.station.turnstile.v1',
     VALUE_FORMAT='AVRO',
-    KEY = 'timestamp'
 );
 
 CREATE TABLE TURNSTILE_SUMMARY
