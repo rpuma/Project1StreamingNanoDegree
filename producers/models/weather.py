@@ -82,6 +82,7 @@ class Weather(Producer):
         #
         #
         logger.info("weather kafka proxy integration incomplete - skipping")
+
         resp = requests.post(
             f"{Weather.rest_proxy_url}/topics/{self.topic_name}",
             headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
@@ -93,7 +94,12 @@ class Weather(Producer):
                 }
             )
         )
-        resp.raise_for_status()
+        print(data)
+        print("************")
+        try:
+            resp.raise_for_status()
+        except:
+            print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
 
         logger.debug(
             "sent weather data to kafka, temp: %s, status: %s",
