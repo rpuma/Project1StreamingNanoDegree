@@ -59,7 +59,7 @@ class Turnstile(Producer):
             key={"timestamp": self.time_millis()},
             value={"station_id": self.station.station_id,
                     "station_name" : self.station.name,
-                    "line" : self.station.color},
+                    "line" : self.station.color.name},
             value_schema = self.value_schema,
             key_schema = self.key_schema 
         )
