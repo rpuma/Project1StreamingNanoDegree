@@ -23,25 +23,6 @@ class Weather(Producer):
 
     rest_proxy_url = "http://localhost:8082"
 
-    key_schema = """{
-    "namespace": "com.udacity",
-    "type": "record",
-    "name": "weather.key",
-    "fields": [
-        {"name": "timestamp", "type": "long"}
-    ]
-    }"""
-    value_schema = """{
-    "namespace": "com.udacity",
-    "type": "record",
-    "name": "weather.value",
-    "fields": [
-        {"name": "temperature","type": "float"},
-        {"name":"status", "type": "string"}
-    ]
-    }"""
-
-
     winter_months = set((0, 1, 2, 3, 10, 11))
     summer_months = set((6, 7, 8))
 
@@ -77,7 +58,6 @@ class Weather(Producer):
         #
         if Weather.value_schema is None:
             with open(f"{Path(__file__).parents[0]}/schemas/weather_value.json") as f:
-                #Weather.value_schema = json.load(f)
                 Weather.value_schema = json.load(f)
 
     def _set_weather(self, month):
@@ -106,20 +86,21 @@ class Weather(Producer):
             headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
             data=json.dumps(
                 {
-                   "value_schema": Weather.value_schema,
-                   "key_schema": Weather.key_schema,
-                   "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
+                   "value_schema": json.dumps(Weather.value_schema),
+                   "key_schema": json.dumps(Weather.key_schema),
+                   "records":[{"key": self.time_millis(), "value":{"temperature":float(self.temp), "status": self.status.name}}]
                 }
             )
         )
         print("data")
         print(json.dumps(
                 {
-                   "value_schema": Weather.value_schema,
-                   "key_schema": Weather.key_schema,
-                   "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
+                   "value_schema": json.dumps(Weather.value_schema),
+                   "key_schema": json.dumps(Weather.key_schema),
+                   "records":[{"key": self.time_millis(), "value":{"temperature":float(self.temp), "status": self.status.name}}]
                 }
-            ))
+            )
+        )
         print("************")
         try:
             resp.raise_for_status()
