@@ -37,7 +37,7 @@ class KafkaConsumer:
         #
         #
         self.broker_properties = {
-            "broker.url" = "PLAINTEXT://localhost:9092"
+            "broker.url" : "PLAINTEXT://localhost:9092"
         }
         # TODO: Create the Consumer, using the appropriate type.
         if is_avro is True:
