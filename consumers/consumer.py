@@ -78,8 +78,6 @@ class KafkaConsumer:
         # Additionally, make sure you return 1 when a message is processed, and 0 when no message
         # is retrieved.        
         message = self.consumer.poll(1.0)
-        print("entro 2")
-        print(message)
         if message is None:
             print("no message received by consumer")
         elif message.error() is not None:
@@ -87,12 +85,11 @@ class KafkaConsumer:
         else:
             try:
                 print(message.value())
+                self.message_handler(message)
                 return 1
             except KeyError as e:
                 print(f"Failed to unpack message {e}")
         logger.info("_consume is incomplete - skipping")
-        print("message")
-        print(message)
         return 0
 
 
