@@ -94,5 +94,5 @@ class KafkaConsumer:
     def close(self):
         """Cleans up any open kafka consumers"""
         # TODO: Cleanup the kafka consumer
-        consumer.close()
+        self.consumer.close()
 
