@@ -67,6 +67,7 @@ class KafkaConsumer:
         """Asynchronously consumes data from kafka topic"""
         while True:
             num_results = 1
+            print("entro consume")
             while num_results > 0:
                 num_results = self._consume()
             await gen.sleep(self.sleep_secs)
@@ -88,6 +89,8 @@ class KafkaConsumer:
             except KeyError as e:
                 print(f"Failed to unpack message {e}")
         logger.info("_consume is incomplete - skipping")
+        print("message")
+        print(message)
         return 0
 
 
