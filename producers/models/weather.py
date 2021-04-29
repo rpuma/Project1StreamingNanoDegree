@@ -95,16 +95,6 @@ class Weather(Producer):
                 }
             )
         )
-        print("data")
-        print(json.dumps(
-                {
-                   "value_schema": json.dumps(Weather.value_schema),
-                   "key_schema": json.dumps(Weather.key_schema),
-                   "records":[{"key": self.time_millis(), "value":{"temperature":self.temp, "status": self.status.name}}]
-                }
-            )
-        )
-        print("************")
         try:
             resp.raise_for_status()
         except:
