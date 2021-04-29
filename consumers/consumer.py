@@ -77,7 +77,7 @@ class KafkaConsumer:
         # TODO: Poll Kafka for messages. Make sure to handle any errors or exceptions.
         # Additionally, make sure you return 1 when a message is processed, and 0 when no message
         # is retrieved.        
-        message = c.poll(1.0)
+        message = self.consumer.poll(1.0)
         print("entro 2")
         print(message)
         if message is None:
