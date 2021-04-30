@@ -43,10 +43,12 @@ class KafkaConsumer:
         if is_avro is True:
             self.broker_properties["schema.registry.url"] = "http://localhost:8081"
             schema_registry = CachedSchemaRegistryClient({"url": self.broker_properties["schema.registry.url"]})
-            self.consumer = AvroConsumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0", "auto.offset.reset": "earliest"},
+            self.consumer = AvroConsumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0",
+             "auto.offset.reset": "earliest" if self.offset_earliest else "latest"},
             schema_registry = schema_registry)
         else:
-            self.consumer = Consumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0", "auto.offset.reset": "earliest" })
+            self.consumer = Consumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0", 
+            "auto.offset.reset":"earliest" if self.offset_earliest else "latest" })
 
         # TODO: Configure the AvroConsumer and subscribe to the topics. Make sure to think about
         # how the `on_assign` callback should be invoked.
