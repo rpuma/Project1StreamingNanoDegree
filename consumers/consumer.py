@@ -43,10 +43,10 @@ class KafkaConsumer:
         if is_avro is True:
             self.broker_properties["schema.registry.url"] = "http://localhost:8081"
             schema_registry = CachedSchemaRegistryClient({"url": self.broker_properties["schema.registry.url"]})
-            self.consumer = AvroConsumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0"},
+            self.consumer = AvroConsumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0", "auto.offset.reset": "earliest"},
             schema_registry = schema_registry)
         else:
-            self.consumer = Consumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0"})
+            self.consumer = Consumer({"bootstrap.servers": self.broker_properties["broker.url"], "group.id": "0", "auto.offset.reset": "earliest" })
 
         # TODO: Configure the AvroConsumer and subscribe to the topics. Make sure to think about
         # how the `on_assign` callback should be invoked.
@@ -57,11 +57,12 @@ class KafkaConsumer:
         # TODO: If the topic is configured to use `offset_earliest` set the partition offset to
         # the beginning or earliest
         logger.info("on_assign is incomplete - skipping")
-        for partition in partitions:
-            partition.offset = OFFSET_BEGINNING
-        # TODO: Assign the consumer the partitions
-        logger.info("partitions assigned for %s", self.topic_name_pattern)
-        consumer.assign(partitions)
+        if self.offset_earliest:
+            for partition in partitions:
+                partition.offset = OFFSET_BEGINNING
+            # TODO: Assign the consumer the partitions
+            logger.info("partitions assigned for %s", self.topic_name_pattern)
+            consumer.assign(partitions)
 
     async def consume(self):
         """Asynchronously consumes data from kafka topic"""
